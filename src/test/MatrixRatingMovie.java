@@ -291,16 +291,16 @@ public class MatrixRatingMovie {
 
 	public static void main(String args[]) throws IOException {
 		MatrixRatingMovie movie = new MatrixRatingMovie();
-		/*movie.readFileRating("ml-latest-small/ratings.csv");
-		movie.readFileMoives("Sdata/Movies_Title.txt");
-		movie.writeMatrix("Sdata/Movie_ratings.txt");
+		movie.readFileRating("ml-latest-small/ratings.csv");
+		movie.readFileMoives("Data/Movies_Title.txt");
+		movie.writeMatrix("Data/Movie_ratings.txt");
 		
-*/	
-		movie.countUser("ml-latest-small/ratings.csv");
-		//movie.readInitMatrix("Sdata/Movie_ratings.txt");
-		SparseMatrix a = movie.getSparseMatrix();
-		SingularValueDecompositor dm = new SingularValueDecompositor(a.toSparseMatrix());
-		Matrix[] mtr = dm.decompose();
+
+		//movie.countUser("ml-latest-small/ratings.csv");
+		movie.readInitMatrix("Data/Movie_ratings.txt");
+		//SparseMatrix a = movie.getSparseMatrix();
+		//SingularValueDecompositor dm = new SingularValueDecompositor(a.toSparseMatrix());
+		//Matrix[] mtr = dm.decompose();
 		//	Map<Integer, Integer> key = movie.getMovieId_index();
 	//	Integer value = key.get(112);
 	//	System.out.println("value is: " + value);

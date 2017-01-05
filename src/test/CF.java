@@ -34,7 +34,7 @@ public class CF {
 		//Matrix x = new Basic2DMatrix(a);
 		Matrix x=null;
 		try {
-			x=matrixRating.readMatrixRating("Data/Movie_ratings.txt", 0, 669);
+			x=matrixRating.readMatrixRating("Data/Movie_ratings.txt", 0, 670);
 			System.out.println("This is matrix:"+x.rows()+" "+x.columns());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

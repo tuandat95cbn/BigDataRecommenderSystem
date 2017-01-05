@@ -1,7 +1,9 @@
 package test;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+
 
 
 import org.la4j.Matrix;
@@ -46,13 +48,14 @@ public class CF {
 			t[i]=v.euclideanNorm();
 		}
 		double testRa[][]= new double[tN][tN];
-		for(int i=x.rows()-tN;i<x.rows();i++){
-			Vector v=x.getRow(i);
-			for(int j=v.length()-tN;i<v.length();i++){
+		for(int i=0;i<tN;i++){
+			Vector v=x.getRow(x.rows()-tN+i);
+			for(int j=0;j<tN;j++){
 				testRa[i][j]=v.get(j);
-				x.set(i, j, 0);
+				x.set(x.rows()-tN+i,j, 0);
 			}
 		}
+		System.out.println(new Basic2DMatrix(testRa));
 		ArrayList<ArrayList<TPair>> S= new ArrayList<ArrayList<TPair>>();
 		for(int i=0;i<x.rows();i++){
 			Vector u=x.getRow(i);
@@ -77,13 +80,36 @@ public class CF {
 			}
 			S.add(mi);
 		}
+		double raPre[][]= new double[tN][tN];
+		for(int i=0;i<tN;i++){
+			//Vector v=x.getRow(x.rows()-tN+i);
+			ArrayList<TPair> v= S.get(x.rows()-tN+i);
+			
+			for(int j=0;j<tN;j++)
+			if (testRa[i][j]!=0 ){
+				//testRa[i][j]=v.get();
+				double rate=0.0;
+				double sumDs=0;
+				for(int jj=0;jj<v.size();jj++){
+					TPair p=v.get(jj);
+					rate +=p.ds*x.get(p.vt, j);
+					sumDs+=p.ds;
+				}
+				raPre[i][j]=rate/sumDs;
+			} else{
+				raPre[i][j]=0;
+			}
+		}
+		
 		double rex=0;
 		int count=0;
 		for(int i=0;i<tN;i++)
 			for(int j=0;j<tN;j++)
 				if(testRa[i][j]!=0 ){
-					//rex=rex+
+					count++;
+					rex+=Math.pow(raPre[i][j]-testRa[i][j], 2);
 				}
+		System.out.println(Math.sqrt(rex)*1/count);
 	}
 	private void init(){
 		matrixRating = new MatrixRatingMovie();

@@ -297,6 +297,8 @@ public class MatrixRatingMovie {
 		movie.writeMatrix("Sdata/Movie_ratings.txt");
 		movie.countUser("ml-latest-small/ratings.csv");*/
 		movie.readInitMatrix("Sdata/Movie_ratings.txt");
+		movie.countUser("ml-latest-small/ratings.csv");
+		//movie.readInitMatrix("Sdata/Movie_ratings.txt");
 		SparseMatrix a = movie.getSparseMatrix();
 		//System.out.println(a);
 		SingularValueDecompositor dm = new SingularValueDecompositor(a);

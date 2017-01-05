@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.la4j.Matrix;
 import org.la4j.Vector;
+import org.la4j.decomposition.SingularValueDecompositor;
 import org.la4j.matrix.SparseMatrix;
 import org.la4j.matrix.dense.Basic2DMatrix;
 import org.la4j.matrix.sparse.CRSMatrix;
@@ -128,7 +129,7 @@ public class MatrixRatingMovie {
 			Vector vector = new BasicVector(a);
 			sparseMatrix.setRow(count, vector);
 			line = bufferedReader.readLine();
-			System.out.println("Reading count is: " + count);
+	//		System.out.println("Reading count is: " + count);
 			count++;
 		}
 		bufferedReader.close();
@@ -298,9 +299,8 @@ public class MatrixRatingMovie {
 		//movie.countUser("ml-latest-small/ratings.csv");
 		movie.readInitMatrix("Sdata/Movie_ratings.txt");
 		SparseMatrix a = movie.getSparseMatrix();
-		Vector b = a.getRow(0);
-		System.out.println("Done");
-		System.out.println(b);
+		SingularValueDecompositor dm = new SingularValueDecompositor(a.toSparseMatrix());
+		Matrix[] mtr = dm.decompose();
 		//	Map<Integer, Integer> key = movie.getMovieId_index();
 	//	Integer value = key.get(112);
 	//	System.out.println("value is: " + value);

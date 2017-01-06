@@ -6,8 +6,11 @@ import java.util.ArrayList;
 
 
 
+
+
 import org.la4j.Matrix;
 import org.la4j.Vector;
+import org.la4j.matrix.SparseMatrix;
 import org.la4j.matrix.dense.Basic2DMatrix;
 class TPair{
 	
@@ -32,9 +35,11 @@ public class CF {
 	private void makeCollaborativeMatrix(){
 		double a[][]={{0,1,2},{0,3,4},{4,0,5}};
 		//Matrix x = new Basic2DMatrix(a);
-		Matrix x=null;
+		//Matrix x=null;
 		try {
-			x=matrixRating.readMatrixRating("Data/Movie_ratings.txt", 0, 670);
+			MatrixRatingMovie movie = new MatrixRatingMovie();
+			movie.readInitMatrix("Data/Movie_ratings.txt");
+			SparseMatrix x = movie.getSparseMatrix();
 			System.out.println("This is matrix:"+x.rows()+" "+x.columns());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -49,7 +49,8 @@ class Pair {
 public class MatrixRatingMovie {
 
 	private int n_user;
-	private int m_movie = 27278;
+	/*private int m_movie = 27278;*/
+	private int m_movie = 9125;
 	private Map<Integer, ArrayList<Pair>> user_movies;
 	private Map<Integer,Integer> movieId_index;
 	private double matrix_user_movie[];
@@ -62,7 +63,7 @@ public class MatrixRatingMovie {
 		user_movies = new HashMap<Integer, ArrayList<Pair>>();
 		movieId_index = new HashMap<>();
 		matrix_user_movie = new double[m_movie];
-		sparseMatrix = new CRSMatrix(671,27278);
+		sparseMatrix = new CRSMatrix(671,9125);
 		/*for(int i = 0;i < n_user;i++){
 			for(int j = 0;j < m_movie;j++) {
 				matrix_user_movie[i][j] = new Float(0);
@@ -129,7 +130,7 @@ public class MatrixRatingMovie {
 			Vector vector = new BasicVector(a);
 			sparseMatrix.setRow(count, vector);
 			line = bufferedReader.readLine();
-	//		System.out.println("Reading count is: " + count);
+			System.out.println("Reading count is: " + count + " length is: " + strings.length);
 			count++;
 		}
 		bufferedReader.close();
@@ -250,6 +251,7 @@ public class MatrixRatingMovie {
 		}
 		bufferedReader.close();
 	}
+	
 	public Matrix readMatrixRating(String filename,int start,int end) throws IOException {
 		//initMatrix();
 		
@@ -294,14 +296,19 @@ public class MatrixRatingMovie {
 		movie.readFileRating("ml-latest-small/ratings.csv");
 		movie.readFileMoives("Data/Movies_Title.txt");
 		movie.writeMatrix("Data/Movie_ratings.txt");
-		
-
-		//movie.countUser("ml-latest-small/ratings.csv");
 		movie.readInitMatrix("Data/Movie_ratings.txt");
-		//SparseMatrix a = movie.getSparseMatrix();
-		//SingularValueDecompositor dm = new SingularValueDecompositor(a.toSparseMatrix());
+		//movie.countUser("ml-latest-small/ratings.csv");
+		SparseMatrix a = movie.getSparseMatrix();
+		Vector b = a.getRow(670);
+		System.out.println(b);
+		System.out.println("DONE!!");
+		//System.out.println(a);
+		//SingularValueDecompositor dm = new SingularValueDecompositor(a);
+		//long time = System.currentTimeMillis();
 		//Matrix[] mtr = dm.decompose();
-		//	Map<Integer, Integer> key = movie.getMovieId_index();
+		//long endTime = System.currentTimeMillis();
+		//System.out.println((endTime - time)/1000);
+	//	Map<Integer, Integer> key = movie.getMovieId_index();
 	//	Integer value = key.get(112);
 	//	System.out.println("value is: " + value);
 	//	movie.check("Data/Movie_ratings.txt");

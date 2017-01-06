@@ -33,7 +33,8 @@ public class MatrixItemAndFeatures {
 	// n,m la tuong ung voi hang va cot
 	// n tuong ung voi item 
 	// m tuong ung voi feature
-	private int n = 27278,m = 20;
+	/*private int n = 27278,m = 20;*/
+	private int n = 9125,m = 20;
 	
 	public MatrixItemAndFeatures(){
 		listFeature = new HashMap<String, Integer>();
@@ -336,11 +337,11 @@ public class MatrixItemAndFeatures {
 		System.out.println(listFilmOfFeature);*/
 		MatrixItemAndFeatures matrix = new MatrixItemAndFeatures();
 		matrix.readFileMovie("ml-latest-small/movies.csv");
-		matrix.writeFeatureOfMovie("Data/Features.txt");
-		matrix.writeMovie("Data/Movie_Features.txt");
-		matrix.writeMoiveAndId("Data/Movies_Title.txt");
+		matrix.writeFeatureOfMovie("Sdata/Features.txt");
+		matrix.writeMovie("Sdata/Movie_Features.txt");
+		matrix.writeMoiveAndId("Sdata/Movies_Title.txt");
 		//matrix.initMatrixMovieFeature();
-		//matrix.writeMatrix("Data/Matrix_Content.txt");
+		matrix.writeMatrix("Data/Matrix_Content.txt");
 		System.out.println("DONE!");
 	}
 	

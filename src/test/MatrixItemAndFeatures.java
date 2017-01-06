@@ -337,9 +337,9 @@ public class MatrixItemAndFeatures {
 		System.out.println(listFilmOfFeature);*/
 		MatrixItemAndFeatures matrix = new MatrixItemAndFeatures();
 		matrix.readFileMovie("ml-latest-small/movies.csv");
-		matrix.writeFeatureOfMovie("Sdata/Features.txt");
-		matrix.writeMovie("Sdata/Movie_Features.txt");
-		matrix.writeMoiveAndId("Sdata/Movies_Title.txt");
+		matrix.writeFeatureOfMovie("Data/Features.txt");
+		matrix.writeMovie("Data/Movie_Features.txt");
+		matrix.writeMoiveAndId("Data/Movies_Title.txt");
 		//matrix.initMatrixMovieFeature();
 		matrix.writeMatrix("Data/Matrix_Content.txt");
 		System.out.println("DONE!");

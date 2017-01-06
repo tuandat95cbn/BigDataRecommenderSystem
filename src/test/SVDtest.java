@@ -12,17 +12,18 @@ public class SVDtest {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		double []x= {3,4};
-		double []y={5,6};
+		double []x= {0,0,5,0,7,0,7,8,9,0};
+		double []y={0,0,0,0,0,0,1,0,0,0};
 		Vector v = new  BasicVector(x);
 		Vector z = new  BasicVector(y);
-		SparseMatrix a = new CRSMatrix(2,2);
+		SparseMatrix a = new CRSMatrix(2,10);
 		a.setRow(0, v);
 		a.setRow(1, z);
-		SingularValueDecompositor dm = new SingularValueDecompositor(a);
-		Matrix[] e = dm.decompose();
-		System.out.println(e[0]);
-		System.out.println(e[1]);
-		System.out.println(e[2]);
+		
+		//SingularValueDecompositor dm = new SingularValueDecompositor(a);
+		//Matrix[] e = dm.decompose();
+		//System.out.println(e[0]);
+		//System.out.println(e[1]);
+		System.out.println(a.cardinality());
 	}
 }

@@ -49,8 +49,9 @@ class Pair {
 public class MatrixRatingMovie {
 
 	private int n_user;
-	/*private int m_movie = 27278;*/
-	private int m_movie = 9125;
+	private int m_movie = 27278;
+	/*private int m_movie = 9125;*/
+	/*private int m_movie = 1682;*/
 	private Map<Integer, ArrayList<Pair>> user_movies;
 	private Map<Integer,Integer> movieId_index;
 	private double matrix_user_movie[];
@@ -63,7 +64,10 @@ public class MatrixRatingMovie {
 		user_movies = new HashMap<Integer, ArrayList<Pair>>();
 		movieId_index = new HashMap<>();
 		matrix_user_movie = new double[m_movie];
-		sparseMatrix = new CRSMatrix(671,9125);
+		/*
+		 * 
+		 */
+		sparseMatrix = new CRSMatrix(138493,27278);
 		/*for(int i = 0;i < n_user;i++){
 			for(int j = 0;j < m_movie;j++) {
 				matrix_user_movie[i][j] = new Float(0);
@@ -201,6 +205,30 @@ public class MatrixRatingMovie {
 		System.out.println("WRITE FILE DONE!");
 	}
 	
+	public void writeSparseMatrix(String filename) throws IOException {
+		sortUserId();
+		bufferedWriter = new BufferedWriter(new FileWriter(new File(filename)));
+		Set<Map.Entry<Integer, ArrayList<Pair>>> set = user_movies.entrySet();
+		for(Map.Entry<Integer, ArrayList<Pair>> rate:set) {
+			ArrayList<Pair> list = rate.getValue();
+			int size = list.size();
+			int user_id = rate.getKey();
+			for(int i = 0;i < size;i++) {
+				StringBuffer strings = new StringBuffer();
+				int movie_id = movieId_index.get(list.get(i).movie_id);
+				strings.append(user_id);
+				strings.append("\t");
+				strings.append(movie_id + 1);
+				strings.append("\t");
+				strings.append(list.get(i).ratingofMovie);
+				strings.append("\n");
+				bufferedWriter.write(strings.toString());
+			}
+		}
+		bufferedWriter.flush();
+		bufferedReader.close();
+	}
+	
 	public void check(String filename) throws IOException {
 		bufferedReader = new BufferedReader(new FileReader(new File(filename)));
 		String line = bufferedReader.readLine();
@@ -292,20 +320,18 @@ public class MatrixRatingMovie {
 
 	public static void main(String args[]) throws IOException {
 		MatrixRatingMovie movie = new MatrixRatingMovie();
-		/*movie.readFileRating("ml-latest-small/ratings.csv");
-		movie.readFileMoives("Sdata/Movies_Title.txt");
-		movie.writeMatrix("Sdata/Movie_ratings.txt");
-		movie.countUser("ml-latest-small/ratings.csv");*/
-		movie.readInitMatrix("Sdata/Movie_ratings.txt");
-		movie.countUser("ml-latest-small/ratings.csv");
-		//movie.readInitMatrix("Sdata/Movie_ratings.txt");
-		SparseMatrix a = movie.getSparseMatrix();
-		//System.out.println(a);
-		SingularValueDecompositor dm = new SingularValueDecompositor(a);
-		long time = System.currentTimeMillis();
-		Matrix[] mtr = dm.decompose();
+		movie.readFileRating("ml-20m/ratings.csv");
+		movie.readFileMoives("Data/Movies_Title.txt");
+		movie.writeSparseMatrix("Data/Movie_ratings_1.txt");
+	//	movie.countUser("ml-latest-small/ratings.csv");*/
+	//	movie.readInitMatrix("Sdata/Movie_ratings.txt");
+	//	movie.countUser("ml-20m/ratings.csv");
+		/*long time = System.currentTimeMillis();
+		movie.readInitMatrix("Data/Movie_ratings.txt");
 		long endTime = System.currentTimeMillis();
-		System.out.println((endTime - time)/1000);
+		Vector b = movie.getSparseMatrix().getRow(0);
+		System.out.println("\nTime is: " + (endTime - time)/1000);
+		System.out.println("\n"+b);*/
 	//	Map<Integer, Integer> key = movie.getMovieId_index();
 	//	Integer value = key.get(112);
 	//	System.out.println("value is: " + value);

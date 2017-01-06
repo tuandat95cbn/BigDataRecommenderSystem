@@ -33,8 +33,8 @@ public class MatrixItemAndFeatures {
 	// n,m la tuong ung voi hang va cot
 	// n tuong ung voi item 
 	// m tuong ung voi feature
-	/*private int n = 27278,m = 20;*/
-	private int n = 9125,m = 20;
+	private int n = 27278,m = 20;
+	/*private int n = 9125,m = 20;*/
 	
 	public MatrixItemAndFeatures(){
 		listFeature = new HashMap<String, Integer>();

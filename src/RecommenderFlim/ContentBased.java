@@ -200,13 +200,13 @@ public class ContentBased {
 	}
 	
 	public static void main(String args[]) throws IOException{
-		/*ContentBased contentBased = new ContentBased();
+		ContentBased contentBased = new ContentBased();
 		contentBased.initMovieFeature();
 		contentBased.initUserMovieTest();
 		contentBased.RecommandFilm();
-		contentBased.printPredict();*/
-		double x[][] = {{0,1,2},{0,0,0},{1,0,1}};
-		double v[] = {1,0,0,4};
+		contentBased.printPredict();
+//		double x[][] = {{0,1,2},{0,0,0},{1,0,1}};
+//		double v[] = {1,0,0,4};
 	//	a.eachNonZeroInRow(3, (VectorProcedure) vector);
 //		System.out.println(a);
 		//SingularValueDecompositor dc = new SingularValueDecompositor(a);

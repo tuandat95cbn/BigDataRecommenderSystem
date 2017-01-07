@@ -48,7 +48,7 @@ class Pair {
 
 public class MatrixRatingMovie {
 
-	private int n_user=138490;
+	private int n_user=138493;
 	private int m_movie = 27278;
 	//private int m_movie = 9125;
 	private Map<Integer, ArrayList<Pair>> user_movies;
@@ -130,7 +130,7 @@ public class MatrixRatingMovie {
 			Vector vector = new BasicVector(a);
 			sparseMatrix.setRow(count, vector);
 			line = bufferedReader.readLine();
-			System.out.println("Reading count is: " + count + " length is: " + strings.length);
+			if (count %10000==0) System.out.println("Reading count is: " + count + " length is: " + strings.length);
 			count++;
 		}
 		bufferedReader.close();
@@ -318,16 +318,16 @@ public class MatrixRatingMovie {
 	public static void main(String args[]) throws IOException {
 		MatrixRatingMovie movie = new MatrixRatingMovie();
 
-		movie.readFileRating("ml-latest-small/ratings.csv");
-		movie.readFileMoives("Data/Movies_Title.txt");
-		movie.writeMatrix("Data/Movie_ratings.txt");
-		movie.readInitMatrix("Data/Movie_ratings.txt");
+		movie.readFileRating("ml-20m/ratings.csv");
+		movie.readFileMoives("Data2/Movies_Title.txt");
+		movie.writeSparseMatrix("Data2/Movie_ratings.txt");
+		//movie.readInitMatrix("Data2/Movie_ratings.txt");
 		//movie.countUser("ml-latest-small/ratings.csv");
-		SparseMatrix a = movie.getSparseMatrix();
+		//SparseMatrix a = movie.getSparseMatrix();
 		
-		Vector b = a.getRow(670);
-		System.out.println(b);
-		System.out.println("DONE!!");
+		//Vector b = a.getRow(670);
+		//System.out.println(b);
+		//System.out.println("DONE!!");
 		//System.out.println(a);
 		//SingularValueDecompositor dm = new SingularValueDecompositor(a);
 		//long time = System.currentTimeMillis();

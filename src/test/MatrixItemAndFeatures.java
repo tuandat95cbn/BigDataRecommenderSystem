@@ -336,12 +336,12 @@ public class MatrixItemAndFeatures {
 		System.out.println(listFeature);
 		System.out.println(listFilmOfFeature);*/
 		MatrixItemAndFeatures matrix = new MatrixItemAndFeatures();
-		matrix.readFileMovie("ml-latest-small/movies.csv");
-		matrix.writeFeatureOfMovie("Data/Features.txt");
-		matrix.writeMovie("Data/Movie_Features.txt");
-		matrix.writeMoiveAndId("Data/Movies_Title.txt");
+		matrix.readFileMovie("ml-20m/movies.csv");
+		matrix.writeFeatureOfMovie("Data2/Features.txt");
+		matrix.writeMovie("Data2/Movie_Features.txt");
+		matrix.writeMoiveAndId("Data2/Movies_Title.txt");
 		//matrix.initMatrixMovieFeature();
-		matrix.writeMatrix("Data/Matrix_Content.txt");
+		matrix.writeMatrix("Data2/Matrix_Content.txt");
 		System.out.println("DONE!");
 	}
 	

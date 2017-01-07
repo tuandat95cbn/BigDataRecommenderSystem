@@ -24,6 +24,6 @@ public class SVDtest {
 		//Matrix[] e = dm.decompose();
 		//System.out.println(e[0]);
 		//System.out.println(e[1]);
-		System.out.println(a.cardinality());
+		//System.out.println(a.c);
 	}
 }

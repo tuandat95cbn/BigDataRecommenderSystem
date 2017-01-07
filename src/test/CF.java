@@ -33,7 +33,7 @@ public class CF {
 	private MatrixRatingMovie matrixRating;
 	private double [][] x;
 	private int N=5;
-	private int tN=200;
+	private int tN=1000;
 	private void storeSparseMatrix(SparseMatrix x){
 		String fileName= "SparseMatrix.txt";
 	    FileOutputStream fos;
@@ -42,6 +42,7 @@ public class CF {
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 		    oos.writeObject(x.toBinary());
 		    oos.close();
+		    fos.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,6 +61,7 @@ public class CF {
 			ObjectInputStream ois = new ObjectInputStream(fin);
 			byte[] l= (byte[]) ois.readObject();
 			ois.close();
+			fin.close();
 			m=CCSMatrix.fromBinary(l);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -161,7 +163,10 @@ public class CF {
 					rate +=p.ds*x.get(p.vt, j);
 					sumDs+=p.ds;
 				}
-				raPre[i][j]=rate/sumDs;
+				if(sumDs==0) raPre[i][j]=0;
+				else raPre[i][j]=rate/sumDs;
+				if(Double.isNaN(raPre[i][j]))
+					System.exit(0);
 			} else{
 				raPre[i][j]=0;
 			}
@@ -173,11 +178,15 @@ public class CF {
 			for(int j=0;j<tN;j++)
 				if(testRa[i][j]!=0 ){
 					count++;
-					rex+=Math.pow(raPre[i][j]-testRa[i][j], 2)*(1/cc)*(1/cc);
+					System.out.println(raPre[i][j]+" "+testRa[i][j]);
+					rex+=Math.pow(raPre[i][j]-testRa[i][j], 2);
+					if(Double.isNaN(rex))
+						System.exit(0);
+					System.out.println(i+" "+j+" "+rex+" "+count);
 				}
 		System.out.println(count);
 		System.out.println(rex);
-		System.out.println(Math.sqrt(rex));
+		System.out.println(Math.sqrt(rex)/(cc*1.0));
 	}
 	private void init(){
 		matrixRating = new MatrixRatingMovie();

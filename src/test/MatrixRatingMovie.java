@@ -50,6 +50,7 @@ public class MatrixRatingMovie {
 
 	private int n_user=138493;
 	private int m_movie = 27278;
+	private int k = 200;
 	//private int m_movie = 9125;
 	private Map<Integer, ArrayList<Pair>> user_movies;
 	private Map<Integer,Integer> movieId_index;
@@ -58,12 +59,16 @@ public class MatrixRatingMovie {
 	private BufferedWriter bufferedWriter;
 	private double matrix[][];
 	private SparseMatrix sparseMatrix;
+	private SparseMatrix P; // P = V*D'
+	private SparseMatrix S;
 	
 	public MatrixRatingMovie(){
 		user_movies = new HashMap<Integer, ArrayList<Pair>>();
 		movieId_index = new HashMap<>();
 		matrix_user_movie = new double[m_movie];
 		sparseMatrix = new CRSMatrix(n_user,m_movie);
+		P = new CRSMatrix(k,m_movie);
+		S = new CRSMatrix(n_user,k);
 		/*for(int i = 0;i < n_user;i++){
 			for(int j = 0;j < m_movie;j++) {
 				matrix_user_movie[i][j] = new Float(0);
@@ -121,7 +126,7 @@ public class MatrixRatingMovie {
 		String line = bufferedReader.readLine();
 		int count = 0;
 		double a[];
-		while(line != null && count <n_user ) {
+		while(line != null && count < n_user ) {
 			a = new double[m_movie];
 			String strings[] = line.split(" ");
 			for(int i = 0;i < strings.length;i++) {
@@ -131,6 +136,25 @@ public class MatrixRatingMovie {
 			sparseMatrix.setRow(count, vector);
 			line = bufferedReader.readLine();
 			if (count %10000==0) System.out.println("Reading count is: " + count + " length is: " + strings.length);
+			count++;
+		}
+		bufferedReader.close();
+	}
+	
+	public void readSparseMatrix(String filename) throws IOException {
+		bufferedReader = new BufferedReader(new FileReader(new File(filename)));
+		String line = bufferedReader.readLine();
+		int count = 0;
+		while(line != null) {
+			String strings[] = line.split("\t");
+			int user_id = Integer.parseInt(strings[0]) - 1;
+			int movie_id = Integer.parseInt(strings[1]) - 1;
+			double rating  =  Double.parseDouble(strings[2]);
+			sparseMatrix.set(user_id, movie_id, rating);
+			line = bufferedReader.readLine();
+			if(count % 1000000 == 0){
+				System.out.println("Reading row is: " + count);
+			}
 			count++;
 		}
 		bufferedReader.close();
@@ -222,6 +246,37 @@ public class MatrixRatingMovie {
 			}
 		}
 		bufferedWriter.flush();
+		bufferedReader.close();
+	}
+	
+	public void readMatrixS(String filename) throws IOException {
+		bufferedReader = new BufferedReader(new FileReader(new File(filename)));
+		String line = bufferedReader.readLine();
+		int i = 0;
+		while(line != null) {
+			String strings[] = line.split(" ");
+			//System.out.println("Length is: " + strings.length);
+			for(int j = 0;j < strings.length;j++) {
+				S.set(i, j,Double.parseDouble(strings[j]));
+			}
+			line  = bufferedReader.readLine();
+			i++;
+		}
+		bufferedReader.close();
+	}
+	
+	public void readMatrixP(String filename) throws IOException {
+		bufferedReader = new BufferedReader(new FileReader(new File(filename)));
+		String line = bufferedReader.readLine();
+		int i = 0;
+		while(line != null) {
+			String strings[] = line.split(" ");
+			for(int j = 0;j < strings.length;j++) {
+				P.set(i, j,Double.parseDouble(strings[j]));
+			}
+			line  = bufferedReader.readLine();
+			i++;
+		}
 		bufferedReader.close();
 	}
 	
@@ -318,28 +373,18 @@ public class MatrixRatingMovie {
 	public static void main(String args[]) throws IOException {
 		MatrixRatingMovie movie = new MatrixRatingMovie();
 
-		movie.readFileRating("ml-20m/ratings.csv");
-		movie.readFileMoives("Data2/Movies_Title.txt");
-		movie.writeSparseMatrix("Data2/Movie_ratings.txt");
-		//movie.readInitMatrix("Data2/Movie_ratings.txt");
-		//movie.countUser("ml-latest-small/ratings.csv");
-		//SparseMatrix a = movie.getSparseMatrix();
-		
-		//Vector b = a.getRow(670);
-		//System.out.println(b);
-		//System.out.println("DONE!!");
-		//System.out.println(a);
-		//SingularValueDecompositor dm = new SingularValueDecompositor(a);
-		//long time = System.currentTimeMillis();
-		//Matrix[] mtr = dm.decompose();
-		//long endTime = System.currentTimeMillis();
-		//System.out.println((endTime - time)/1000);
-	//	Map<Integer, Integer> key = movie.getMovieId_index();
-	//	Integer value = key.get(112);
-	//	System.out.println("value is: " + value);
-	//	movie.check("Data/Movie_ratings.txt");
-		//movie.readMatrix("Data/Movie_ratings.txt",0,1);
-		//movie.checkMatrix();
+		/*movie.readFileRating("ml-latest-small/ratings.csv");
+		movie.readFileMoives("Data/Movies_Title.txt");
+		movie.writeMatrix("Data/Movie_ratings.txt");*/
+		/*long time = System.currentTimeMillis();
+		movie.readSparseMatrix("Data/Movie_ratings_1.txt");
+		long endTime = System.currentTimeMillis();
+		System.out.println("Time is: " + (endTime - time)/1000);*/
+		movie.readMatrixS("Data/S.txt");
+		Vector b = movie.getS().getRow(0); 
+		System.out.println(b);
+		System.out.println("DONE!!");
+
 	}
 	
 	
@@ -354,6 +399,25 @@ public class MatrixRatingMovie {
 		return matrix_user_movie;
 	}
 	
+	
+	public int getK() {
+		return k;
+	}
+	public void setK(int k) {
+		this.k = k;
+	}
+	public SparseMatrix getP() {
+		return P;
+	}
+	public void setP(SparseMatrix p) {
+		P = p;
+	}
+	public SparseMatrix getS() {
+		return S;
+	}
+	public void setS(SparseMatrix s) {
+		S = s;
+	}
 	public void setMatrix_user_movie(double[] matrix_user_movie) {
 		this.matrix_user_movie = matrix_user_movie;
 	}

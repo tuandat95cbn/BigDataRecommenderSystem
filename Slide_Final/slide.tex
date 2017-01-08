@@ -150,13 +150,120 @@ Nguyễn Tuấn Đạt\\% \inst{1}
 \begin{frame}{Nội dung}
 \tableofcontents
 \end{frame}
-
 \section{Mô tả dữ liệu}
+%\section{Xử lý dữ liệu}
+%\section{Các phương pháp sử dụng}
+%\section{Đánh giá các phương pháp}
+%\section{Kết quả}
+\begin{frame}{Mô tả dữ liệu}
+\textbf{Giới thiệu bộ dữ liệu}
+\bi
+\item Bộ dư liệu: ml-20m ( size: 190MB ).
+\item Download:\textbf{ \url{http://grouplens.org/datasets/movielens/}}.
+\item Bộ dữ liệu mô tả đánh giá 1 - 5 sao của một dịch vụ giới thiệu phim từ MovieLens.
+\item Bộ dữ liệu chứa:
+\bi
+\item 20000263 rating và 465564 tag của 27278 bộ phim.
+\item Dữ liệu đươc tạo bởi 138493  users.
+\ei
+\item Các users được thu thập ngẫu nhiên. Tất cả users đã đánh giá ít nhất 20 bộ phim.
+\item Các file dữ liệu chứa trong 6 tập, genome-scores.csv, genome-tags.csv, links.csv, movies.csv, ratings.csv và tags.csv. 
+\bi
+\item Các file đã sử dụng: movies.csv và ratings.csv.
+\ei
+\ei
+\end{frame}
+\begin{frame}{Mô tả dữ liệu}
+\bi
+\item Cấu trúc file dữ liệu ratings:
+\bi
+\item Tất cả đánh giá của người dùng điều chứa trong file ratings.csv
+\item Mỗi dòng của file sau dòng header có định dạng ( userId,movieId,rating,timestamp ).
+\item Các rating thực hiện trên thang điểm 5 sao, với gia số ( 0.5 sao - 5.0 sao ).
+\ei
+\item Cấu trúc file dữ liệu Movies:
+\bi
+\item Thông tin của các movies chứa trong file moives.csv.
+\item Mỗi dòng sau dòng header có định dạng (movieId,title,genres).
+\item genres là danh sách thể loại được lựa chọn: Action, Adventure, Animation , Children's, Comedy, Crime, Documentary, Drama, Fantasy, Film-Noir, Horror, Musical, Mystery, Romance, Sci-Fi, Thriller, War, Western, (no genres listed)
+\ei
+\ei
+\end{frame}
+
+\section{Xử lý dữ liệu}
+\begin{frame}{Xử lý dữ liệu}
+\begin{itemize}
+\item Sử dung Java để xử lý dữ liệu ban đầu(chuẩn hóa dữ liệu). Các file sử dụng gồm có: ratings.csv, movies.csv.
+\item File ratings.csv
+\bi 
+\item Đưa ra file biểu diễn theo định dạng ( userId,movieId,rating ). 
+\item File biểu diễn mà trận rating của các user.
+\ei
+\item File movies.csv
+\bi
+\item Đưa ra file dưới dạng ma trận
+\item Hàng biểu diễn cho movie và Côt biểu diễn cho danh sách các đặc tính  
+\begin{displaymath}
+(i,j) = \left\{ \begin{array}{ll}
+1 & \textrm{nếu movie i có đặc tính j}\\
+0 & \textrm{nếu movie i ko đặc tính j}\\
+\end{array} \right.
+\end{displaymath}
+\ei
+\end{itemize} 
+\end{frame}
+
 \section{Các phương pháp sử dụng}
-\section{Đánh giá các phương pháp}
-\section{Kết quả}
+
+\begin{frame}{Content-based}
+\textbf{Ý tưởng}: Giới thiệu các movie đến user x với các movie có đặc tính gần với các movie mà user x đã đánh giá cao trước đó.
+\bi
+\item user x sẽ có một vector người dùng
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width =0.7 \textwidth]{img1.png}
+\caption{vector người dùng}
+\end{center}
+\end{figure}
+\item Chọn ngưỡng đánh giá rating của người dùng $\alpha$
+\begin{displaymath}
+(x,i) = \left\{ \begin{array}{ll}
+1 & \textrm{nếu rating(x,i) $\geq \alpha $}\\
+-1 & \textrm{nếu rating(x,i) $\le \alpha$ }\\
+\end{array} \right.
+\end{displaymath}
+\ei
+\end{frame}
+\begin{frame}{Content-based}
+\bi
+\item $\alpha = 4.0$ Ta có vector người dùng
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width =0.7 \textwidth]{img2.png}
+\caption{vector người dùng sau khi đánh giá}
+\end{center}
+\end{figure}
+\item Tìm đặc tính của user ta thực hiện:
+\bi
+\item  $V_{feature}  =  V_{user} * M_{movie}$. \\
+Trong đó: $V_{feature}$ vector đặc tính người dùng, $V_{user}$ vector người dùng, $M_{movie}$ ma trận movie và các đặc tính.
+\ei
+\ei
+\end{frame}
+\begin{frame}{Content-based}
+\bi
+\item Chuẩn hóa lại $V_{feature}$
+\begin{displaymath}
+V_{feature}(i) = \left\{ \begin{array}{ll}
+1 & \textrm{nếu  $V_{feature}(i) > 0$}\\
+0 & \textrm{nếu  $V_{feature}(i) < 0$ }\\
+\end{array} \right.
+\end{displaymath}
+\item Sử dụng độ đo Cosin để tình khoảng cách giữa vector đặc tính của người dùng và movie
+\item Gợi ý những movie gần với vector đặc tính của người dùng.
+\ei
+\end{frame}
 \begin{frame}{Tài liệu tham khảo}
 \section*{Tài liệu tham khảo}
-
 \end{frame}
 \end{document}

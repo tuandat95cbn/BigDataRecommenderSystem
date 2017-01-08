@@ -153,6 +153,49 @@ Nguyễn Tuấn Đạt\\% \inst{1}
 
 \section{Mô tả dữ liệu}
 \section{Các phương pháp sử dụng}
+\begin{frame}{Collaborative Filtering}
+\color{vhilight}{ Ý tưởng :}
+\begin{itemize}
+\item Bước 1: Xét người dùng cần gợi ý phim x. Ta tìm tập N người dùng có tập đánh giá phim tương đồng với người dùng x. 
+\item Bước 2: Ước lượng đánh giá của người dùng x với những phim mà anh ấy chưa xem bằng cách dựa vào tập N của x. Sau đó, ta đưa ra t phim có ước lượng cao nhất để gợi ý xem cho người dùng x.
+\end{itemize} 
+\end{frame}
+\begin{frame}{Tìm kiếm tập người dùng tương đồng}
+Tính độ tương đồng giữa người dùng x và người dùng y bằng độ đo cosin:
+$$sim(x,y)=cos(overrightarrow{r_x},\overrightarrow{r_y})=\dfrac{\overrightarrow{r_x}\bullet\overrightarrow{r_y}}{||\overrightarrow{r_x}||||\overrightarrow{r_y}||}$$
+Với mỗi người dùng ta sẽ chọn ra k người dùng gần với x nhất. 
+\end{frame}
+\begin{frame}{Ước lượng với những phim chưa đánh giá}
+Xét người dùng x và bộ phim i $r_xi$ sẽ được ước lượng bằng công thức: 
+$$ r_{xi}=\dfrac{\sum_{j\in N(x)} S_{x,j} *r_{ji}}{\sum_{j\in N(x) S_{x,j}}}$$
+với : $S_{xj}$ là độ tương đồng của người dùng x và người dùng j
+
+\end{frame}
+\begin{frame}{Latent Factor Model}
+{\color{vhilight}{ Ý tưởng :}} 
+Sử dụng SVD để giảm số chiểu của dữ liệu.
+$$R=P*Q^T$$
+với Q(item,factor) và P(user,factor);
+
+
+Ước lượng được tính bằng công thức $$r_{xi}=q_i*p_x$$ 
+Hàm đánh giá $$ min_{P,Q} \sum_{i,j\in R} = (R_{ij}-q_j*p_i)^2$$
+Để mô hình đúng hơn với S dữ liệu đã bị mất ta thêm vào hàm đánh giá các tham số để mong muốn có kết quả tốt hơn trong việc ước lượng các đánh giá.
+$$ min_{P,Q} \sum_{i,j\in R} = (R_{ij}-q_j*p_i)^2+[\lambda_1 \sum_i ||p_i||^2 +\lambda_1 \sum_j ||q_j||^2]$$
+
+\end{frame}
+\begin{frame}
+Ta sẽ sử dụng SGD để tối thiểu hàm đánh giá:
+Ta thu được: \\
+Với mỗi $r_{xi}:$
+\begin{itemize}
+\item $\varepsilon_{xi} =2(r_{xi}-q_i*p_x)$
+\item $q_i=q_i+\mu_1(\varepsilon_{xi}*p_x-\lambda_2q_i$
+\item $p_x=p_x+\mu_1(\varepsilon_{xi}*q_i-\lambda_2p_x$
+
+\end{itemize}
+với $\mu_{1,2}$ là tốc độ học 
+\end{frame}
 \section{Đánh giá các phương pháp}
 \section{Kết quả}
 \begin{frame}{Tài liệu tham khảo}

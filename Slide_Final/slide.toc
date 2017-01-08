@@ -1,0 +1,5 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{M\IeC {\^o} t\IeC {\h a} d\IeC {\~\uhorn } li\IeC {\d \ecircumflex }u}{3}{0}{1}
+\beamer@sectionintoc {2}{C\IeC {\'a}c ph\IeC {\uhorn }\IeC {\ohorn }ng ph\IeC {\'a}p s\IeC {\h \uhorn } d\IeC {\d u}ng}{3}{0}{2}
+\beamer@sectionintoc {3}{\IeC {\DJ }\IeC {\'a}nh gi\IeC {\'a} c\IeC {\'a}c ph\IeC {\uhorn }\IeC {\ohorn }ng ph\IeC {\'a}p}{3}{0}{3}
+\beamer@sectionintoc {4}{K\IeC {\'\ecircumflex }t qu\IeC {\h a}}{3}{0}{4}

@@ -127,7 +127,7 @@
 %\setbeamertemplate{footline}{}
 
 % Tác giả, Tiêu đề, vân vân
-\title[]{{\huge \bf Hệ gơi ý}\\
+\title[]{{\huge \bf Hệ gợi ý}\\
   }
 
 \author[]{
@@ -158,9 +158,9 @@ Nguyễn Tuấn Đạt\\% \inst{1}
 \begin{frame}{Mô tả dữ liệu}
 \textbf{Giới thiệu bộ dữ liệu}
 \bi
-\item Bộ dư liệu: ml-20m ( size: 190MB ).
+\item Bộ dữ liệu: ml-20m ( size: 190MB ).
 \item Download:\textbf{ \url{http://grouplens.org/datasets/movielens/}}.
-\item Bộ dữ liệu mô tả đánh giá 1 - 5 sao của một dịch vụ giới thiệu phim từ MovieLens.
+\item Bộ dữ liệu mô tả đánh giá 1 - 5 sao phim từ MovieLens.
 \item Bộ dữ liệu chứa:
 \bi
 \item 20000263 rating và 465564 tag của 27278 bộ phim.
@@ -178,14 +178,14 @@ Nguyễn Tuấn Đạt\\% \inst{1}
 \item Cấu trúc file dữ liệu ratings:
 \bi
 \item Tất cả đánh giá của người dùng điều chứa trong file ratings.csv
-\item Mỗi dòng của file sau dòng header có định dạng ( userId,movieId,rating,timestamp ).
+\item Mỗi dòng của file sau dòng header có định dạng\\( userId,movieId,rating,timestamp ).
 \item Các rating thực hiện trên thang điểm 5 sao, với gia số ( 0.5 sao - 5.0 sao ).
 \ei
 \item Cấu trúc file dữ liệu Movies:
 \bi
 \item Thông tin của các movies chứa trong file moives.csv.
 \item Mỗi dòng sau dòng header có định dạng (movieId,title,genres).
-\item genres là danh sách thể loại được lựa chọn: Action, Adventure, Animation , Children's, Comedy, Crime, Documentary, Drama, Fantasy, Film-Noir, Horror, Musical, Mystery, Romance, Sci-Fi, Thriller, War, Western, (no genres listed)
+\item Genres là danh sách thể loại được lựa chọn: Action, Adventure, Animation , Children's, Comedy, Crime, Documentary, Drama, Fantasy, Film-Noir, Horror, Musical, Mystery, Romance, Sci-Fi, Thriller, War, Western, (no genres listed)
 \ei
 \ei
 \end{frame}
@@ -193,7 +193,7 @@ Nguyễn Tuấn Đạt\\% \inst{1}
 \section{Xử lý dữ liệu}
 \begin{frame}{Xử lý dữ liệu}
 \begin{itemize}
-\item Sử dung Java để xử lý dữ liệu ban đầu(chuẩn hóa dữ liệu). Các file sử dụng gồm có: ratings.csv, movies.csv.
+\item Sử dụng Java để xử lý dữ liệu ban đầu(chuẩn hóa dữ liệu). Các file sử dụng gồm có: ratings.csv, movies.csv.
 \item File ratings.csv
 \bi 
 \item Đưa ra file biểu diễn theo định dạng ( userId,movieId,rating ). 
@@ -201,8 +201,8 @@ Nguyễn Tuấn Đạt\\% \inst{1}
 \ei
 \item File movies.csv
 \bi
-\item Đưa ra file dưới dạng ma trận
-\item Hàng biểu diễn cho movie và Côt biểu diễn cho danh sách các đặc tính  
+\item Đưa ra file dưới dạng ma trận.
+\item Hàng biểu diễn cho movie và cột biểu diễn cho danh sách các đặc tính.  
 \begin{displaymath}
 (i,j) = \left\{ \begin{array}{ll}
 1 & \textrm{nếu movie i có đặc tính j}\\
@@ -223,14 +223,24 @@ Nguyễn Tuấn Đạt\\% \inst{1}
 \end{itemize} 
 \end{frame}
 \begin{frame}{Tìm kiếm tập người dùng tương đồng}
+Xét một phim i nào đó:
 Tính độ tương đồng giữa người dùng x và người dùng y bằng độ đo cosin:
-$$sim(x,y)=cos(overrightarrow{r_x},\overrightarrow{r_y})=\dfrac{\overrightarrow{r_x}\bullet\overrightarrow{r_y}}{||\overrightarrow{r_x}||||\overrightarrow{r_y}||}$$
-Với mỗi người dùng ta sẽ chọn ra k người dùng gần với x nhất. 
+$$sim(x,y)=cos(\overrightarrow{r_x},\overrightarrow{r_y})=\dfrac{\overrightarrow{r_x}\bullet\overrightarrow{r_y}}{||\overrightarrow{r_x}||||\overrightarrow{r_y}||}$$
+Với mỗi người dùng ta sẽ chọn ra k người dùng gần với x nhất có đánh giá cho phim i. 
 \end{frame}
 \begin{frame}{Ước lượng với những phim chưa đánh giá}
 Xét người dùng x và bộ phim i $r_xi$ sẽ được ước lượng bằng công thức: 
 $$ r_{xi}=\dfrac{\sum_{j\in N(x)} S_{x,j} *r_{ji}}{\sum_{j\in N(x) S_{x,j}}}$$
-với : $S_{xj}$ là độ tương đồng của người dùng x và người dùng j
+với : $ S_{xj} $ là độ tương đồng của người dùng x và người dùng j.\\
+
+Ước lượng với trung bình trọng số:
+$$r_{xi}=b_{xi}+\dfrac{\sum_{j\in N(i;x)} S_{i,j} \bullet (r_{xj} -b_{xj} }{\sum_{j\in N(i;x)} S_{ij} }$$
+Với $$b_{xi}= \mu + b_x + b_i $$ 
+\begin{itemize}
+\item $\mu$ là trung bình độ lệch 
+\item $b_x$ trung bình độ lệch theo người dùng x
+\item $b_i$ trung bình độ lệch theo phim i
+\end{itemize}
 
 \end{frame}
 \begin{frame}{Latent Factor Model}
@@ -264,7 +274,7 @@ với $\mu_{1,2}$ là tốc độ học
 \begin{frame}{Content-based}
 \textbf{Ý tưởng}: Giới thiệu các movie đến user x với các movie có đặc tính gần với các movie mà user x đã đánh giá cao trước đó.
 \bi
-\item user x sẽ có một vector người dùng
+\item Mỗi người dùng x sẽ có một vector người dùng.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width =0.7 \textwidth]{img1.png}
@@ -310,8 +320,52 @@ V_{feature}(i) = \left\{ \begin{array}{ll}
 \ei
 \end{frame}
 \section{Đánh giá các phương pháp}
+\begin{frame}{RMSE}
+Sử dụng tiêu chuẩn ước lượng:\\
+Root Mean Square Error (RMSE): $\sqrt{\dfrac{1}{|R|}\sum_{(i,x)\in R} (\hat{r_{xi}}-r_{xi})^2}$\\
+Ước lượng trên chỉ áp dụng được với Collaborative Filtering và Latent Factor Model, Content-base không thể đánh giá theo phương pháp này.
+\end{frame}
 \section{Kết quả}
+\begin{frame}{Thực hiện}
+\begin{itemize}
+\item Sử dụng Java để tạo ma trận dữ liệu.
+\item Sử dụng nén thưa(thư viện Java, Matlab) để nhét toàn bộ tập dữ liệu vào bộ nhớ.
+\item Tách lấy 1000 rating làm tập test phần còn lại làm tập train.
+\end{itemize}
+\end{frame}
+\begin{frame}{Collaborative Filtering}
+\begin{itemize}
+
+\item Chọn k=5,10 phần tử có độ tương đồng gần nhất.
+\item Kết hợp với trung bình trọng số để đoán các rating trong tập test.
+
+\end{itemize}
+\end{frame}
+\begin{frame}{Latent Factor Model}
+\begin{itemize}
+\item Chọn số factor=30,50,100 (30).
+\item Lựa chọn các tham số $\mu \approx 0.0002 (0.0001)$ .
+\item Chọn $\lambda \approx 0.1 (0.02)$ .
+\item Sử dụng Stochastic Gradient Descent.
+\end{itemize}
+
+\end{frame}
+\begin{frame}{Kết quả}
+Dự đoán trên 1000 tập rating ngẫu nhiên
+\begin{itemize}
+\item Collaborative Filtering(k=5) : 1.13
+\item Latent Factor Model(Matlab SVD: 1.4406)
+\item Latent Factor Model($\lambda_1=\lambda_2=0.002, SGD)$ : 3.5(cũ) ?? (update 1.1361)
+\end{itemize}
+
+\end{frame}
+\begin{frame}{Cảm ơn thầy và các bạn đã lắng nghe}
+\includegraphics[scale=0.6]{thanks.jpg}
+\end{frame}
 \begin{frame}{Tài liệu tham khảo}
 \section*{Tài liệu tham khảo}
+\begin{itemize}
+\item Slide Datamining Stanford
+\end{itemize}
 \end{frame}
 \end{document}

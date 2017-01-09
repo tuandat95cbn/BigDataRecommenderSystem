@@ -8,33 +8,24 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.zip.ZipEntry;
 
 import org.la4j.Matrix;
 import org.la4j.Vector;
+import org.la4j.iterator.MatrixIterator;
+import org.la4j.iterator.VectorIterator;
 import org.la4j.matrix.SparseMatrix;
 import org.la4j.matrix.dense.Basic2DMatrix;
 import org.la4j.matrix.sparse.CCSMatrix;
 import org.la4j.matrix.sparse.CRSMatrix;
-class TPair{
-	
-	public TPair(double ds, int vt) {
-		super();
-		this.ds = ds;
-		this.vt = vt;
-	}
-	public double ds;
-	public int vt;
-	@Override
-	public String toString() {
-		return "TPair [ds=" + ds + ", vt=" + vt + "]";
-	}
-	
-}
-public class CF {
+import org.la4j.vector.SparseVector;
+
+public class CF3 {
 	private MatrixRatingMovie matrixRating;
 	private double [][] x;
-	private int N=5;
+	private int N=10;
 	private int tN=100;
 	private void storeSparseMatrix(SparseMatrix x){
 		String fileName= "SparseMatrix.txt";
@@ -111,99 +102,129 @@ public class CF {
 		int r=x.rows();
 		int c=x.columns();
 		int cc=0;
-		double testRa[][]= new double[tN][tN];
+		Random rand= new Random();
+		double e=0.3;
+		//SparseMatrix testRa= new CRSMatrix(tN,tN);
+		ArrayList<TriPair> testRa= new ArrayList<TriPair>();
 		for(int i=0;i<tN;i++){
 			Vector v=x.getRow(x.rows()-tN+i);
-			for(int j=0;j<tN;j++){
-				testRa[i][j]=v.get(j);
-				if(testRa[i][j]!=0) cc++;
-				x.set(x.rows()-tN+i,j, 0);
+			MatrixIterator it = x.nonZeroIterator();
+			while (testRa.size()<tN){
+				if(rand.nextDouble()<0.005){
+					testRa.add(new TriPair(it.get(), it.columnIndex(), it.rowIndex()));
+					it.set(0);
+				}
+				it.next();
 			}
 		}
 		System.out.println("Done split "+cc);
-		double[] t= new double[r];
-		for(int i=0;i<x.rows();i++){
-			Vector v= x.getRow(i);
-			t[i]=v.euclideanNorm();
-		}
+		
 		System.out.println("Done cal Norm");
-		//System.out.println(x.getRow(x.rows()-1));
+		System.out.println(testRa);
 		
-		
+		double nguy=x.sum()/(x.cardinality()*1.0);
 		//System.out.println(new Basic2DMatrix(testRa));
 		ArrayList<ArrayList<TPair>> S= new ArrayList<ArrayList<TPair>>();
+		SparseMatrix xT=x.toColumnMajorSparseMatrix();
+		HashMap<Integer, ArrayList<TPair>> map= new HashMap<Integer, ArrayList<TPair>>();
+		HashMap<Integer, Double> mapBias= new HashMap<Integer, Double>();
+		for(int i=0;i<tN;i++){
+			TriPair p=testRa.get(i);
+			if( !mapBias.containsKey(p.r)){
+				Vector u=x.getRow(p.r);
+				SparseVector uS=u.toSparseVector();
+				double bais=0;
+				if(uS.cardinality()!=0) bais= u.sum()/(uS.cardinality()*1.0)-nguy;
+				mapBias.put(p.r, bais);
+			}
+		}
+		double[] t= new double[c];
+		for(int i=0;i<xT.columns();i++){
+			Vector v= xT.getColumn(i);
+			t[i]=v.euclideanNorm();
+		}
+		HashMap<Integer, Double> mapBiasMovie= new HashMap<Integer, Double>();
 		for(int i=0;i<tN;i++){
 			System.out.println("Cal S"+i);
-			int it=x.rows()-tN+i;
-			Vector u=x.getRow(it);
-			ArrayList<TPair> mi= new ArrayList<TPair>();
-			mi.add(new TPair(-100000, -1));
-			for(int j=0;j<x.rows();j++)
-				if (it!=j){
-				Vector v=x.getRow(j);
-				double mu=u.innerProduct(v)/(t[it]*t[j]);
-				if (mu>mi.get(mi.size()-1).ds){
-					if(mi.size()+1>N)
-						mi.remove(mi.size()-1);
-					int xd=0;
-					for(int ii=mi.size()-1;ii>0;ii--)
-						if(mi.get(ii).ds>mu){ 
-							mi.add(ii+1, new TPair(mu,j));
-							xd=1;
-							break;
-						}
-					if(xd==0) mi.add(0, new TPair(mu,j));
+			TriPair p=testRa.get(i);
+			if(!map.containsKey(p.c)){
+				Vector u=xT.getColumn(p.c);
+				SparseVector uS=u.toSparseVector();
+				double bais=0;
+				if(uS.cardinality()!=0) bais= u.sum()/(uS.cardinality()*1.0)-nguy;
+				ArrayList<TPair> mi= new ArrayList<TPair>();
+				mi.add(new TPair(-100000, -1));
+				for(int j=0;j<xT.columns();j++)
+					if (p.c!=j){
+					
+					Vector v=xT.getColumn(j);
+					double mu=0;
+					if((t[p.c]*t[j])!=0)
+						mu=u.innerProduct(v)/(t[p.c]*t[j]);
+					
+					if (mu>mi.get(mi.size()-1).ds){
+						if(mi.size()+1>N)
+							mi.remove(mi.size()-1);
+						int xd=0;
+						for(int ii=mi.size()-1;ii>0;ii--)
+							if(mi.get(ii).ds>mu){ 
+								mi.add(ii+1, new TPair(mu,j));
+								
+								xd=1;
+								break;
+							}
+						if(xd==0) mi.add(0, new TPair(mu,j));
+					}
 				}
+				System.out.println("mi"+mi);
+				for(int j=0;j<mi.size();j++)
+					if(!mapBiasMovie.containsKey(mi.get(j).vt)){
+						
+						Vector uu=xT.getColumn(mi.get(j).vt);
+						SparseVector uuS=uu.toSparseVector();
+						double baisMi=0;
+						if(uuS.cardinality()!=0) baisMi= uu.sum()/(uuS.cardinality()*1.0)-nguy;
+						mapBiasMovie.put(mi.get(j).vt, baisMi);
+					}
+				map.put(p.c, mi);
+				mapBiasMovie.put(p.c, bais);
+				System.out.println("map push"+p.c);
 			}
-			S.add(mi);
 		}
 		System.out.println("Done cal S");
-		double raPre[][]= new double[tN][tN];
+		
+		
+		
+		
+		double rex=0;
+		ArrayList<TriPair> raPre= new ArrayList<TriPair>();
 		for(int i=0;i<tN;i++){
 			//Vector v=x.getRow(x.rows()-tN+i);
-			ArrayList<TPair> v= S.get(i);
-			
-			for(int j=0;j<tN;j++)
-			if (testRa[i][j]!=0 ){
-				//testRa[i][j]=v.get();
-				double rate=0.0;
-				double sumDs=0;
-				for(int jj=0;jj<v.size();jj++){
+			TriPair tP=testRa.get(i);
+			double rate=0.0;
+			double sumDs=0;
+			ArrayList<TPair> v= map.get(tP.c);
+			for(int jj=0;jj<v.size();jj++){
 					TPair p=v.get(jj);
-					rate +=p.ds*x.get(p.vt, j);
+					rate +=p.ds*(x.get(tP.r, p.vt)-nguy-mapBias.get(tP.r)-mapBiasMovie.get(p.vt));//
 					sumDs+=p.ds;
 				}
-				if(sumDs==0) raPre[i][j]=0;
-				else raPre[i][j]=rate/sumDs;
-				if(Double.isNaN(raPre[i][j]))
-					System.exit(0);
-			} else{
-				raPre[i][j]=0;
-			}
+			double val=0;
+			if(sumDs!=0) val=rate/(sumDs*1.0)+nguy+mapBias.get(tP.r)+mapBiasMovie.get(tP.c);
+			raPre.add(new TriPair(val,tP.r,tP.c ));
+			rex+=Math.pow(val-tP.ds, 2);
+			System.out.println(tP.ds+" "+val);
 		}
-		System.out.println("Done pre rating");
-		double rex=0;
-		int count=0;
-		for(int i=0;i<tN;i++)
-			for(int j=0;j<tN;j++)
-				if(testRa[i][j]!=0 ){
-					count++;
-					System.out.println(raPre[i][j]+" "+testRa[i][j]);
-					rex+=Math.pow(raPre[i][j]-testRa[i][j], 2);
-					if(Double.isNaN(rex))
-						System.exit(0);
-					System.out.println(i+" "+j+" "+rex+" "+count);
-				}
-		System.out.println(count);
+		
 		System.out.println(rex);
-		System.out.println(Math.sqrt(rex)/(cc*1.0));
+		System.out.println(Math.sqrt(rex/(tN*1.0)));
 	}
 	private void init(){
 		matrixRating = new MatrixRatingMovie();
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		CF c= new CF();
+		CF3 c= new CF3();
 		c.init();
 		c.makeCollaborativeMatrix();
 	}

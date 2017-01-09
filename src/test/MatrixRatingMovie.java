@@ -47,7 +47,7 @@ class Pair {
 
 
 public class MatrixRatingMovie {
-
+	//private int n_user=671;
 	private int n_user=138493;
 	private int m_movie = 27278;
 	private int k = 200;
@@ -373,17 +373,18 @@ public class MatrixRatingMovie {
 	public static void main(String args[]) throws IOException {
 		MatrixRatingMovie movie = new MatrixRatingMovie();
 
-		/*movie.readFileRating("ml-latest-small/ratings.csv");
-		movie.readFileMoives("Data/Movies_Title.txt");
-		movie.writeMatrix("Data/Movie_ratings.txt");*/
+		//movie.readFileRating("ml-latest-small/ratings.csv");
+		//movie.readFileMoives("Data/Movies_Title.txt");
+		//movie.writeSparseMatrix("Data/Movie_ratings.txt");
 		/*long time = System.currentTimeMillis();
 		movie.readSparseMatrix("Data/Movie_ratings_1.txt");
 		long endTime = System.currentTimeMillis();
 		System.out.println("Time is: " + (endTime - time)/1000);*/
-		movie.readMatrixS("Data/S.txt");
-		Vector b = movie.getS().getRow(0); 
-		System.out.println(b);
-		System.out.println("DONE!!");
+		movie.readMatrixS("S1.txt");
+		movie.readMatrixP("D1.txt");
+		//Vector b = movie.getS().getRow(0); 
+		//System.out.println(b);
+		//System.out.println("DONE!!");
 
 	}
 	

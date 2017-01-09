@@ -10,21 +10,21 @@ import org.la4j.matrix.SparseMatrix;
 import org.la4j.matrix.dense.Basic2DMatrix;
 
 public class LFM {
-	Matrix S,D;
-	int tN=2;
+	SparseMatrix S,D;
+	int tN=50;
 	public void solution(){
-		double a[][]={{0,1,2,0},{0,3,4,6},{4,0,5,0}};
-		Matrix x = new Basic2DMatrix(a);
+		//double a[][]={{0,1,2,0},{0,3,4,6},{4,0,5,0}};
+		//Matrix x = new Basic2DMatrix(a);
 		//Matrix x=null;
-//		SparseMatrix x=null;
-//		MatrixRatingMovie movie = new MatrixRatingMovie();
-//		try {
-//			movie.readInitMatrix("Data2/Movie_ratings.txt");
-//			x= movie.getSparseMatrix();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+		SparseMatrix x=null;
+		MatrixRatingMovie movie = new MatrixRatingMovie();
+		try {
+			movie.readSparseMatrix("Data/Movie_ratings.txt");
+			x= movie.getSparseMatrix();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		int cc=0;
 		double testRa[][]= new double[tN][tN];
 		for(int i=0;i<tN;i++){
@@ -35,11 +35,17 @@ public class LFM {
 				x.set(x.rows()-tN+i,j, 0);
 			}
 		}
-		SingularValueDecompositor svd= new SingularValueDecompositor(x);
-		Matrix e[]= svd.decompose();
-		S=e[0];
-		D=e[1].multiply(e[2].transpose());
-		System.out.println(S.multiply(D));
+		System.out.println(cc);
+		try {
+			movie.readMatrixS("S1.txt");
+			movie.readMatrixP("D1.txt");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		S=movie.getS();
+		D=movie.getP();
+		//System.out.println(D.getRow(0));
 		double raPre[][]= new double[tN][tN];
 		for(int i=0;i<tN;i++){
 			

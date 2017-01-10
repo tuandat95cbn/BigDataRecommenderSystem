@@ -8,9 +8,11 @@ Download: http://grouplens.org/datasets/movielens/.<br />
 Bộ dữ liệu mô tả đánh giá 1 - 5 sao phim từ MovieLens.<br />
 Bộ dữ liệu chứa:<br />
 - 20000263 rating và 465564 tag của 27278 bộ phim.
-- I Dữ liệu đươc tạo bởi 138493 users.
+- Dữ liệu đươc tạo bởi 138493 users.
 - Các users được thu thập ngẫu nhiên. Tất cả users đã đánh giá ít nhất
 20 bộ phim.
 - Các file dữ liệu chứa trong 6 tập, genome-scores.csv,
 genome-tags.csv, links.csv, movies.csv, ratings.csv và tags.csv.
-- I Các file đã sử dụng: movies.csv và ratings.csv.
+- Các file đã sử dụng: movies.csv và ratings.csv.
+## Thực hiện
+
